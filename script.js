@@ -1,49 +1,28 @@
-const title = document.getElementById('title');
-const buttons = document.querySelectorAll('button');
-const word = document.getElementById('word');
-const continueButton = document.getElementById('continue');
+const numPlayersInput = document.getElementById('num-players');
+const continueBtn = document.getElementById('continue-btn');
+const screen = document.getElementById('screen');
 
-let playerCount = 0;
-let currentWord = '';
-let words = ['word1', 'word2', 'word3', 'word4', 'word5']; // Add more words to this list
-let currentPlayer = 0;
-let playersWithWords = 0;
+numPlayersInput.addEventListener('input', () => {
+  const numPlayers = numPlayersInput.value;
 
-buttons.forEach(button => {
-    button.addEventListener('click', () => {
-        playerCount = parseInt(button.id);
-        title.textContent = '';
-        buttons.forEach(button => button.style.display = 'none');
-        showWord();
+  screen.innerHTML = '';
+
+  for (let i = 0; i < numPlayers; i++) {
+    const playerDiv = document.createElement('div');
+    playerDiv.classList.add('player');
+    playerDiv.innerHTML = `
+      <h2>Player ${i + 1}</h2>
+      <button class="roll-btn">Roll Dice</button>
+      <div class="score">0</div>
+    `;
+    screen.appendChild(playerDiv);
+
+    const rollBtn = playerDiv.querySelector('.roll-btn');
+    rollBtn.addEventListener('click', () => {
+      const score = Math.floor(Math.random() * 6) + 1;
+      playerDiv.querySelector('.score').textContent = score;
     });
+  }
+
+  continueBtn.style.display = 'none';
 });
-
-continueButton.addEventListener('click', () => {
-    currentPlayer++;
-    if (currentPlayer < playerCount) {
-        showWord();
-    } else {
-        playersWithWords++;
-        if (playersWithWords < playerCount) {
-            currentPlayer = 0;
-            showWord();
-        } else {
-            resetGame();
-        }
-    }
-});
-
-function showWord() {
-    currentWord = words[Math.floor(Math.random() * words.length)];
-    word.textContent = currentWord;
-    continueButton.style.display = 'block';
-}
-
-function resetGame() {
-    title.textContent = 'Imposter Game';
-    buttons.forEach(button => button.style.display = 'block');
-    word.textContent = '';
-    continueButton.style.display = 'none';
-    currentPlayer = 0;
-    playersWithWords = 0;
-}
